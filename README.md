@@ -31,6 +31,25 @@ model.fit_model()
 
 ```
 
+The supported intput file format is CSV, the content of that file must be the sample's data without the headers.
+It must have only three columns, the first one represents the time when the sample was taken. 
+The second one represents the value for the active container and the last one represents the value for the
+respiration. 
+
+An example is shown bellow: 
+
+> 1,243,118.52
+> 2,192,512.245
+> 3,240,840.725
+> 4,235,1396.19
+> 5,314,1895.14625
+> 8,241,2195.29625
+> 11,213,2509.59625
+> 18,185,2892.02125
+> 25,177,3147.39625
+> 30,114,3203.66125
+
+
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first
