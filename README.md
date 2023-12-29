@@ -15,7 +15,9 @@ pip install centurypy
 ```python
 from centurypy import CenturyPy
 
-# define model
+# define the model, the first parameter is the file with the samples's data.
+# the second parameter is a dctionary containing the initial conditions 
+# from where the samples where taken
 model = CenturyPy('./data.csv',{
     "necromasa": 2140,
     "acto": 50.04,
@@ -26,12 +28,23 @@ model = CenturyPy('./data.csv',{
     "frala": 0.33,
 })
 
-# begin training
+# begin training, default 500 generations
 model.fit_model()
+
+# in case you want more precission, you can define 
+# the number of generations using an integer
+model.fit_model(1000)
+
+# or using the parameter's name
+model.fit_model(generations = 1000)
+
+# by default, the library draws a chart containing the result of the training, in case you 
+# don't want to show that chart, you can disable it using the second parameter as follows
+model.fit_model(generations = 500, chart = False)
 
 ```
 
-The supported intput file format is colon separated CSV (,). The content of that file must be the sample's data without the headers.
+The supported intput's file format is colon separated CSV (,). The content of that file must be the sample's data without the headers.
 It must have only three columns, the first one represents the time when the sample was taken, the second one represents the value for the active container and the last one represents the value for the
 respiration. 
 
