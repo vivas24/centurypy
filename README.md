@@ -16,8 +16,8 @@ pip install centurypy
 from centurypy import CenturyPy
 
 # define the model, the first parameter is the file with the samples's data.
-# the second parameter is a dctionary containing the initial conditions 
-# from where the samples where taken
+# the second parameter is a dictionary containing the initial conditions 
+# from where the samples were taken
 model = CenturyPy('./data.csv',{
     "necromasa": 2140,
     "acto": 50.04,
