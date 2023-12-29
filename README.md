@@ -19,14 +19,15 @@ from centurypy import CenturyPy
 # the second parameter is a dictionary containing the initial conditions 
 # from where the samples were taken
 model = CenturyPy('./data.csv',{
-    "necromasa": 2140,
-    "acto": 50.04,
-    "leno": 2250,
-    "paso": 19150,
-    "respo": 0,
-    "ln": 0.33,
-    "frala": 0.33,
+    "necromasa": 2140,  # Necromass
+    "acto": 50.04,      # Initial value for the Active container
+    "leno": 2250,       # Initial value for the Slow container
+    "paso": 19150,      # initial value for the Pasive container
+    "respo": 0,         # initial value for the Respiration
+    "ln": 0.33,         # Lignin
+    "frala": 0.33,      # Fine soil fraction
 })
+
 
 # begin training, default 500 generations
 model.fit_model()
