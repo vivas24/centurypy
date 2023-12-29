@@ -2,6 +2,8 @@
 
 CenturyPy is a Python library for training and running the Century (Soil Organic Matter) model. For more information about Century, take a look at this [link](https://www2.nrel.colostate.edu/projects/irc/public/Documents/Software/Century5/Reference/html/Century/cent5-overview.htm).
 
+This is the first version of the library and only simulates the dynamic for the carbon. 
+
 ## Installation
 
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install centurypy.
@@ -64,7 +66,6 @@ An example is shown bellow:
     30, 114, 3203.66125
 
 ```
-
 
 ## Contributing
 
