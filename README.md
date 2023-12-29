@@ -69,7 +69,6 @@ An example is shown bellow:
 
 ## Contributing
 
-Github repository [here](https://github.com/vivas24/centurypy).
 Pull requests are welcome. For major changes, please open an issue first
 to discuss what you would like to change.
 

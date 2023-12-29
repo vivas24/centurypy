@@ -3,11 +3,11 @@ from setuptools import find_packages, setup
 
 HERE = pathlib.Path(__file__).parent
 
-VERSION = '1.0.0'
+VERSION = '1.0.1'
 PACKAGE_NAME = 'centurypy'
 AUTHOR = 'Gerardo Vivas'
 AUTHOR_EMAIL = 'vivas.fermin24@gmail.com'
-URL = 'https://github.com/vivas24'
+URL = 'https://github.com/vivas24/centurypy'
 LICENSE = 'MIT'
 DESCRIPTION = 'Library to train and run the CENTURY (Soil Organic Matter) model' 
 LONG_DESCRIPTION = (HERE / "README.md").read_text(encoding='utf-8')
