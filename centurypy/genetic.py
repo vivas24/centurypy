@@ -78,8 +78,6 @@ class Genetic:
         if(error < self.error and error >= 0):
             self.error = error
             self.milestones.append([self.generation, self.error])
-            return True
-        return False
 
     def choose_parents(self):
         fitness_tmp = []
@@ -103,10 +101,10 @@ class Genetic:
 
     def evolve(self, generations):
         for _ in range(generations):
-            self.mutate()
             self.evaluate_population()
-            if self.update_error():
-                self.population = self.select_offspring()
+            self.update_error()
+            self.population = self.select_offspring()
+            self.mutate()
             self.print_status()
             self.generation += 1
         self.print_status(True)
