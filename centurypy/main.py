@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 import os.path
 from centurypy.century import Century
@@ -13,6 +14,7 @@ class  CenturyPy:
            raise Exception("Wrong input values format")
         self.params_name = ['Kmet', 'Kest', 'Kminl', 'Khumac', 'Kminp', 'ResEL', 
                             'ResEA', 'ResMet', 'ResLA', 'ResPA', 'PartEst', 'PartLen','PartAct']
+        self.fitted_params = []
         self.training_data = []
         self.time_data = []
         self.century_model = None
@@ -65,36 +67,23 @@ class  CenturyPy:
                                      self.time_data,
                                      self.training_data)
 
-    def __save_parameters(self, parameters):
+    def __save_parameters(self):
         f = open("parameters.txt","w")
-        for i in range(len(parameters)):
-            f.write(f'{self.params_name[i]}: {parameters[i]}\n')
+        for i in range(len(self.fitted_params)):
+            f.write(f'{self.params_name[i]}: {self.fitted_params[i]}\n')
         f.close()
 
-    def __display_parameters(self, parameters):
+    def __display_parameters(self):
         print('+++++++++++++++++++++++++++++++++++++++++++++++')
         print('+++++++++++++++ PARAMETERS ++++++++++++++++++++')
-        for i in range(len(parameters)):
+        for i in range(len(self.fitted_params)):
             param_name = self.params_name[i]
-            print(f'{param_name.rjust(10," ")}: {parameters[i]}')
+            print(f'{param_name.rjust(10," ")}: {self.fitted_params[i]}')
         print('+++++++++++++++++++++++++++++++++++++++++++++++')
 
-    def __display_chart(self,parameters):
+    def __display_chart(self):
         generations, error = zip(*self.genetic_model.milestones)
-        solution = self.century_model.resolve(self.time_data,
-                                              parameters[0], 
-                                              parameters[1], 
-                                              parameters[2], 
-                                              parameters[3], 
-                                              parameters[4], 
-                                              parameters[5], 
-                                              parameters[6], 
-                                              parameters[7], 
-                                              parameters[8], 
-                                              parameters[9], 
-                                              parameters[10], 
-                                              parameters[11], 
-                                              parameters[12])
+        solution = self.century_model.resolve(self.time_data, self.fitted_params )
         fig, axes = plt.subplots(2,1)
         colors = ['b','r']
         names = ['Active','Respiration']
@@ -115,11 +104,29 @@ class  CenturyPy:
         axes[1].set(xlabel='Generations',ylabel='Error (MSE)')
         plt.show()
 
-    def fit_model(self, generations = 500, chart = True):
+    def fit_model(self, generations = 500, chart = False):
         self.genetic_model.evolve(generations)
-        params = self.genetic_model.solution()
-        self.__save_parameters(params)
-        self.__display_parameters(params)
+        self.fitted_params = self.genetic_model.solution()
+        self.__save_parameters()
+        self.__display_parameters()
         if chart:
-            self.__display_chart(params)
+            self.__display_chart()
+
+    def predict_values(self, day, chart = True):
+        time_data = np.linspace(0,day)
+        solution = self.century_model.resolve(time_data, self.fitted_params)
+        if(chart):
+            fig = plt.subplot()
+            colors = ['b','r']
+            names = ['Active','Respiration']
+            for i in [0,1]:
+                name = names[i]
+                color = colors[i]
+                fig.plot(time_data,
+                            solution[i],
+                            f'{color}-' , 
+                            label = f'{name}')
+            fig.set(xlabel='Time',ylabel='C(mg)')
+            fig.legend()
+            plt.show()
 

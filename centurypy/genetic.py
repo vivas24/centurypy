@@ -25,20 +25,7 @@ class Genetic:
 
 
     def mse(self, parameters):
-        model_data = self.century_model.resolve(self.time_data,
-                                                parameters[0], 
-                                                parameters[1], 
-                                                parameters[2], 
-                                                parameters[3], 
-                                                parameters[4], 
-                                                parameters[5], 
-                                                parameters[6], 
-                                                parameters[7], 
-                                                parameters[8], 
-                                                parameters[9], 
-                                                parameters[10], 
-                                                parameters[11], 
-                                                parameters[12])
+        model_data = self.century_model.resolve(self.time_data, parameters)
         max_value = 0
         for i in [0,1]:
             values_model = model_data[i]

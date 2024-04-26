@@ -245,3 +245,4 @@ pyrightconfig.json
 test.py
 test_data.csv
 parameters.txt
+build_and_publish.sh

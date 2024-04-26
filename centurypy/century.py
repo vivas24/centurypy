@@ -21,7 +21,20 @@ class Century:
         self.RESPo = RESPo
 
 
-    def resolve(self, time, Kmet, Kest , Kminl, Khumac , Kminp , ResEL , ResEA , ResMet , ResLA , ResPA , PartEst , PartLen , PartAct ):
+    def resolve(self, time, params):
+        Kmet = params[0] 
+        Kest = params[1]
+        Kminl = params[2]
+        Khumac = params[3]
+        Kminp = params[4]
+        ResEL = params[5]
+        ResEA = params[6]
+        ResMet = params[7]
+        ResLA = params[8]
+        ResPA = params[9]
+        PartEst = params[10]
+        PartLen = params[11]
+        PartAct = params[12]
 
         y0 = self.ESTo, self.METo, self.LENo, self.ACTo, self.PASo, self.RESPo
         
