@@ -124,6 +124,9 @@ class  CenturyPy:
                 color = colors[i]
                 fig.plot(time_data,
                             solution[i],
+                            f'{color}.')
+                fig.plot(time_data,
+                            solution[i],
                             f'{color}-' , 
                             label = f'{name}')
             fig.set(xlabel='Time',ylabel='C(mg)')
