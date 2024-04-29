@@ -52,20 +52,28 @@ class  CenturyPy:
         self.time_data = array[:,0][:]
 
     def __load_century_model(self,input_values):
-        self.century_model = Century(
-            Necromasa = input_values['necromasa'], 
-            ACTo=input_values['acto'], 
-            LENo=input_values['leno'], 
-            PASo=input_values['paso'], 
-            RESPo= input_values['respo'] , 
-            LN= input_values['ln'], 
-            FraLA= input_values['frala']
-        )
+        self.century_model = Century([
+            input_values['necromasa'],
+            input_values['ln'],
+            input_values['frala'],
+            input_values['leno'],
+            input_values['paso'],
+            input_values['acto'],
+            input_values['respo'],
+        ])
 
     def __load_genetic_model(self):
         self.genetic_model = Genetic(self.century_model,
                                      self.time_data,
                                      self.training_data)
+
+    def fit_model(self, generations = 500, chart = False):
+        self.genetic_model.evolve(generations)
+        self.fitted_params = self.genetic_model.solution()
+        self.__save_parameters()
+        self.__display_parameters()
+        if chart:
+            self.__display_fitted_chart()
 
     def __save_parameters(self):
         f = open("parameters.txt","w")
@@ -81,7 +89,7 @@ class  CenturyPy:
             print(f'{param_name.rjust(10," ")}: {self.fitted_params[i]}')
         print('+++++++++++++++++++++++++++++++++++++++++++++++')
 
-    def __display_chart(self):
+    def __display_fitted_chart(self):
         generations, error = zip(*self.genetic_model.milestones)
         solution = self.century_model.resolve(self.time_data, self.fitted_params )
         fig, axes = plt.subplots(2,1)
@@ -104,32 +112,45 @@ class  CenturyPy:
         axes[1].set(xlabel='Generations',ylabel='Error (MSE)')
         plt.show()
 
-    def fit_model(self, generations = 500, chart = False):
-        self.genetic_model.evolve(generations)
-        self.fitted_params = self.genetic_model.solution()
-        self.__save_parameters()
-        self.__display_parameters()
-        if chart:
-            self.__display_chart()
-
     def predict_values(self, day, chart = True):
-        time_data = np.linspace(0,day)
-        solution = self.century_model.resolve(time_data, self.fitted_params)
+        if int(day) < 0:
+           raise Exception("Day must be a positive number")
+        time_data = np.linspace(0,day,dtype=int)
+        solution_data = self.century_model.resolve(time_data, self.fitted_params)      
         if(chart):
-            fig = plt.subplot()
-            colors = ['b','r']
-            names = ['Active','Respiration']
-            for i in [0,1]:
-                name = names[i]
-                color = colors[i]
-                fig.plot(time_data,
-                            solution[i],
-                            f'{color}.')
-                fig.plot(time_data,
-                            solution[i],
-                            f'{color}-' , 
-                            label = f'{name}')
-            fig.set(xlabel='Time',ylabel='C(mg)')
-            fig.legend()
-            plt.show()
+            self.__display_prediction_chart(time_data, solution_data)
+        else:
+            self.__display_prediction_values(time_data,solution_data)
 
+    def __display_prediction_chart(self,time,data):
+        fig = plt.subplot()
+        colors = ['b','r']
+        names = ['Active','Respiration']
+        for i in [0,1]:
+            name = names[i]
+            color = colors[i]
+            fig.plot(time,
+                        data[i],
+                        f'{color}.')
+            fig.plot(time,
+                        data[i],
+                        f'{color}-' , 
+                        label = f'{name}')
+        fig.set(xlabel='Time',ylabel='C(mg)')
+        fig.legend()
+        plt.show()
+
+    def __display_prediction_values(self,time,data):
+        print('+++++++++++++++++++++++++++++++++++++++++++++++')
+        print('++++++++++++++++ SOLUTION +++++++++++++++++++++')
+        rows = zip(time,data[0],data[1])
+        active_label = 'Active'
+        respiration_label = 'Respiration'
+        for row in rows:
+            print(f'Day {row[0]}:')
+            print(f'{active_label.rjust(15," ")}: {"{:.2f}".format(row[1])}')
+            print(f'{respiration_label.rjust(15," ")}: {"{:.2f}".format(row[2])}')
+            print()
+        print('+++++++++++++++++++++++++++++++++++++++++++++++')
+
+        

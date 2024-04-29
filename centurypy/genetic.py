@@ -23,6 +23,27 @@ class Genetic:
         self.fitness = []
         self.generate_population()
 
+    def generate_population(self):
+        for i in range(self.population_size):
+            child = list(np.random.rand(self.n_params))
+            self.population.append(child)
+
+    def evolve(self, generations):
+        for _ in range(generations):
+            self.evaluate_population()
+            self.update_error()
+            self.population = self.select_offspring()
+            self.mutate()
+            self.print_status()
+            self.generation += 1
+        self.print_status(True)
+
+    def evaluate_population(self):
+        fitness_tmp = []
+        for child in self.population:
+            y = self.mse(child)
+            fitness_tmp += [y]
+        self.fitness = np.array(fitness_tmp)
 
     def mse(self, parameters):
         model_data = self.century_model.resolve(self.time_data, parameters)
@@ -38,33 +59,21 @@ class Genetic:
                 max_value = avg
         return round(max_value)
 
-    def generate_population(self):
-        for i in range(self.population_size):
-            child = list(np.random.rand(self.n_params))
-            self.population.append(child)
-
-    def mutate(self):
-        for i in range(len(self.population)):
-            child = self.population[i]
-            if np.random.random() < self.mutation_rate:
-                gen = list(np.random.rand(self.gen_len))
-                index = np.random.randint(len(child) - self.gen_len + 1)
-                child = child[0:index] + gen + child[index + self.gen_len:]
-            self.population[i] = child
-
-    def evaluate_population(self):
-        fitness_tmp = []
-        for child in self.population:
-            y = self.mse(child)
-            fitness_tmp += [y]
-        self.fitness = np.array(fitness_tmp)
-
     def update_error(self):
         fitness_sorted = sorted(self.fitness)
         error = fitness_sorted[0]
         if(error < self.error and error >= 0):
             self.error = error
             self.milestones.append([self.generation, self.error])
+
+    def select_offspring(self):
+        offspring = []
+        for i in range(self.population_size//2):
+            parents =  self.choose_parents()
+            cross_point = np.random.randint(self.n_params)
+            offspring += [ parents[0][:cross_point] + parents[1][cross_point:] ]
+            offspring += [ parents[1][:cross_point] + parents[0][cross_point:] ]
+        return offspring
 
     def choose_parents(self):
         fitness_tmp = []
@@ -76,31 +85,14 @@ class Genetic:
         parents = [x for _,x in sorted(zip(fitness_tmp,population_tmp))]
         return (parents[0],parents[1])
 
-    def select_offspring(self):
-        offspring = []
-        for i in range(self.population_size//2):
-            parents =  self.choose_parents()
-            cross_point = np.random.randint(self.n_params)
-            offspring += [ parents[0][:cross_point] + parents[1][cross_point:] ]
-            offspring += [ parents[1][:cross_point] + parents[0][cross_point:] ]
-        return offspring
-
-
-    def evolve(self, generations):
-        for _ in range(generations):
-            self.evaluate_population()
-            self.update_error()
-            self.population = self.select_offspring()
-            self.mutate()
-            self.print_status()
-            self.generation += 1
-        self.print_status(True)
-
-    def format_time(self, seconds):
-        hh = int(seconds // 3600)
-        mm = int((seconds - (hh * 3600)) // 60)
-        ss = int((seconds - (hh * 3600) - (mm * 60)))
-        return f'{ "0" if hh < 10 else "" }{hh}:{"0" if mm < 10 else ""}{mm}:{"0" if ss < 10 else ""}{ss}'
+    def mutate(self):
+        for i in range(len(self.population)):
+            child = self.population[i]
+            if np.random.random() < self.mutation_rate:
+                gen = list(np.random.rand(self.gen_len))
+                index = np.random.randint(len(child) - self.gen_len + 1)
+                child = child[0:index] + gen + child[index + self.gen_len:]
+            self.population[i] = child
 
     def print_status(self,done = False):
         time_formatted = self.format_time(time.time() - self.start_time)
@@ -110,6 +102,11 @@ class Genetic:
         else:
             print(f'time: {time_formatted}, generation: {self.generation}, error: {error_str}', end='\r') 
 
+    def format_time(self, seconds):
+        hh = int(seconds // 3600)
+        mm = int((seconds - (hh * 3600)) // 60)
+        ss = int((seconds - (hh * 3600) - (mm * 60)))
+        return f'{ "0" if hh < 10 else "" }{hh}:{"0" if mm < 10 else ""}{mm}:{"0" if ss < 10 else ""}{ss}'
 
     def solution(self):
         index = -1

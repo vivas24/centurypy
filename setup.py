@@ -3,7 +3,7 @@ from setuptools import find_packages, setup
 
 HERE = pathlib.Path(__file__).parent
 
-VERSION = '1.0.4'
+VERSION = '1.0.5'
 PACKAGE_NAME = 'centurypy'
 AUTHOR = 'Gerardo Vivas'
 AUTHOR_EMAIL = 'vivas.fermin24@gmail.com'
@@ -12,7 +12,6 @@ LICENSE = 'MIT'
 DESCRIPTION = 'Library to train and run the CENTURY (Soil Organic Matter) model' 
 LONG_DESCRIPTION = (HERE / "README.md").read_text(encoding='utf-8')
 LONG_DESC_TYPE = 'text/markdown'
-
 INSTALL_REQUIRES = [
     'numpy',
     'pandas',
